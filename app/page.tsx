@@ -42,7 +42,7 @@ const AccountView = () => {
   return (
     <div>
       <div className="min-h-screen h-auto bg-[#0b0a0aa7] max-md:bg-[#28242476]">
-        <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] min-w-[5] min-h-[5] py-5 px-5">
+        <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] min-w-[5] min-h-[5] py-3 px-3">
           <div className="flex justify-center items-center">
             <img
               src="/POE-main-logo-192x192.webp"
@@ -78,7 +78,7 @@ const AccountView = () => {
               <button
                 type="button"
                 onClick={onSubmit}
-                className="border w-[100%] focus:outline-none hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-2.5"
+                className="border w-[100%] focus:outline-none hover:bg-gray-800 font-medium rounded-lg text-sm px-3 py-2.5"
               >
                 Import
               </button>

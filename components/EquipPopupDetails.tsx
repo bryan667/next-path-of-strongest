@@ -45,10 +45,10 @@ const EquipPopupDetails: FC<TProps> = ({
           data-component="popup-details-tooltip"
           ref={refs.setFloating}
           style={floatingStyles}
-          className={`${backgroundColor} max-w-[100%] w-fit opacity-95 min-h-[100%] min-w-[350px] z-100 px-[0px] py-[10px]`}
+          className={`${backgroundColor} max-w-[100%] w-fit opacity-95 min-h-[100%] min-w-[300px] z-100 px-[0px] py-[10px]`}
         >
           <div className="text-center">
-            <div className="pb-[10px]">
+            <div className="pb-3">
               <h3 className="font-bold">{equip.name}</h3>
               <h3 className="font-bold">{equip.baseType}</h3>
             </div>

@@ -56,18 +56,18 @@ const CharacterViewer = () => {
     <div>
       <div className="min-h-screen h-auto bg-[#0b0a0aa7] max-md:bg-[#28242476]">
         {!selectedCharacterName && (
-          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-5 px-5">
+          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-3 px-3">
             Loading character data...
           </div>
         )}
         {rawCharacterData?.hasError && (
-          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-5 px-5">
+          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-3 px-3">
             {rawCharacterData.error}
           </div>
         )}
 
         {selectedCharacterName && (
-          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-5 px-5">
+          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-3 px-3">
             <CharacterDropdown
               characterOptions={characterOptions}
               setSelectedCharacterName={setSelectedCharacterName}
@@ -77,7 +77,7 @@ const CharacterViewer = () => {
         )}
 
         {characterData && (
-          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-5 px-5">
+          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-3 px-3">
             <div>
               <h1
                 data-component="char-name"

@@ -41,7 +41,7 @@ const CharacterDropdown: FC<TProps> = ({
         id="dropdown"
         value={selectedCharacterName}
         onChange={handleChange}
-        className="block w-full px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="block w-[100%] px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       >
         {characterOptions.map(
           (char: { name: string; level: string; league: string }) => {
