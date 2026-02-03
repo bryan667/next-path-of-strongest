@@ -1,0 +1,81 @@
+import fetch from 'node-fetch';
+import { NextResponse } from 'next/server';
+
+type CacheEntry = {
+  expiresAt: number;
+  data: any;
+};
+
+const CACHE_TTL_MS = 1000 * 60 * 10;
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __charactersCache: Map<string, CacheEntry> | undefined;
+}
+
+const charactersCache =
+  global.__charactersCache ?? (global.__charactersCache = new Map());
+
+const getCacheKey = (accountName: string, realm: string) =>
+  `${accountName}::${realm}`;
+
+export const runtime = 'nodejs';
+
+const apiUrl = process.env.API_URL;
+const defaultAccountName = process.env.DEFAULT_ACCOUNT_NAME || '';
+
+export async function GET(request: Request) {
+  if (!apiUrl) {
+    return NextResponse.json(
+      { hasError: true, error: 'API_URL is not configured.' },
+      { status: 500 }
+    );
+  }
+
+  const { searchParams } = new URL(request.url);
+  const accountName =
+    searchParams.get('accountName') || defaultAccountName || '';
+  const realm = searchParams.get('realm') || '';
+
+  if (!accountName) {
+    return NextResponse.json(
+      { hasError: true, error: 'accountName is required.' },
+      { status: 400 }
+    );
+  }
+
+  const cacheKey = getCacheKey(accountName, realm);
+  const cached = charactersCache.get(cacheKey);
+  const now = Date.now();
+
+  if (cached && cached.expiresAt > now) {
+    return NextResponse.json(cached.data);
+  }
+
+  try {
+    const params = new URLSearchParams({ accountName });
+    if (realm) {
+      params.append('realm', realm);
+    }
+
+    const response = await fetch(
+      `${apiUrl}/api/poeOne/getCharacters?${params}`
+    );
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { hasError: true, error: `Upstream error: ${response.status}` },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+    charactersCache.set(cacheKey, { data, expiresAt: now + CACHE_TTL_MS });
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json(
+      { hasError: true, error: 'Error fetching character data.' },
+      { status: 500 }
+    );
+  }
+}

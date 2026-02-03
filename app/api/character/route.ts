@@ -1,0 +1,86 @@
+import fetch from 'node-fetch';
+import { NextResponse } from 'next/server';
+
+type CacheEntry = {
+  expiresAt: number;
+  data: any;
+};
+
+const CACHE_TTL_MS = 1000 * 60 * 10;
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __characterCache: Map<string, CacheEntry> | undefined;
+}
+
+const characterCache =
+  global.__characterCache ?? (global.__characterCache = new Map());
+
+const getCacheKey = (accountName: string, characterName: string) =>
+  `${accountName}::${characterName}`;
+
+export const runtime = 'nodejs';
+
+const apiUrl = process.env.API_URL;
+const defaultAccountName = process.env.DEFAULT_ACCOUNT_NAME || '';
+
+export async function GET(request: Request) {
+  if (!apiUrl) {
+    return NextResponse.json(
+      { hasError: true, error: 'API_URL is not configured.' },
+      { status: 500 }
+    );
+  }
+
+  const { searchParams } = new URL(request.url);
+  const accountName =
+    searchParams.get('accountName') || defaultAccountName || '';
+  const characterName =
+    searchParams.get('characterName') || searchParams.get('character') || '';
+
+  if (!accountName || !characterName) {
+    return NextResponse.json(
+      { hasError: true, error: 'accountName and characterName are required.' },
+      { status: 400 }
+    );
+  }
+
+  const cacheKey = getCacheKey(accountName, characterName);
+  const cached = characterCache.get(cacheKey);
+  const now = Date.now();
+
+  if (cached && cached.expiresAt > now) {
+    return NextResponse.json(cached);
+  }
+
+  try {
+    const params = new URLSearchParams({
+      accountName,
+      character: characterName,
+    });
+    const response = await fetch(`${apiUrl}/api/poeOne/getItems?${params}`);
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { hasError: true, error: `Upstream error: ${response.status}` },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+    characterCache.set(cacheKey, {
+      characterData: data,
+      hasError: false,
+      expiresAt: now + CACHE_TTL_MS,
+    });
+    return NextResponse.json({
+      characterData: data,
+      hasError: false,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { hasError: true, error: 'Error fetching items data.' },
+      { status: 500 }
+    );
+  }
+}
