@@ -44,9 +44,13 @@ const CharacterDropdown: FC<TProps> = ({
         className="block w-[100%] px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       >
         {characterOptions.map(
-          (char: { name: string; level: string; league: string }) => {
+          (char: { name: string; level: string; league: string }, index) => {
             return (
-              <option className="text-black" key={char.name} value={char.name}>
+              <option
+                className="text-black"
+                key={`${char.name}${index}`}
+                value={char.name}
+              >
                 {`${char.name}  lvl ${char.level} - ${char.league}`}
               </option>
             );

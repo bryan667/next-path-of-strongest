@@ -49,7 +49,7 @@ export async function GET(request: Request) {
   const now = Date.now();
 
   if (cached && cached.expiresAt > now) {
-    return NextResponse.json(cached.data);
+    return NextResponse.json({ data: cached.data }, { status: 200 });
   }
 
   try {
@@ -71,7 +71,7 @@ export async function GET(request: Request) {
 
     const data = await response.json();
     charactersCache.set(cacheKey, { data, expiresAt: now + CACHE_TTL_MS });
-    return NextResponse.json(data);
+    return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { hasError: true, error: 'Error fetching character data.' },

@@ -6,27 +6,37 @@ import EquipmentGrid from '../../components/EquipmentGrid';
 import CharacterDropdown from '../../components/CharacterDropdown';
 import { isEmpty, sortBy, toLower } from 'lodash';
 import { TEXT_CLASSES } from '@/styles/text';
+import { useRouter } from 'next/navigation';
 
 const CharacterViewer = () => {
   const [rawCharacterData, setRawCharacterData] = useState<CharacterData>();
   const [selectedCharacterName, setSelectedCharacterName] =
     useState<string>('');
   const [characterOptions, setCharacterOptions] = useState<any[]>([]);
+  const [isLoadingOptions, setIsLoadingOptions] = useState<boolean>(true);
+
+  const router = useRouter();
 
   useEffect(() => {
     const getCharacterOptions = async () => {
+      setIsLoadingOptions(true);
       const accountName = localStorage.getItem('accountName');
       const realm = localStorage.getItem('realm');
-      const data = await fetchCharactersByRealm({ accountName, realm });
+      const rawData = await fetchCharactersByRealm({ accountName, realm });
+      const data = rawData?.data || [];
 
-      if (!data?.error && !isEmpty(data)) {
+      if (!rawData?.error && !isEmpty(data)) {
         const sortedData = sortBy(data, d => d.league) || [];
         setCharacterOptions(sortedData);
         const latestCharacter = data.find((d: any) => {
           return toLower(d.league) === 'settlers';
         });
         setSelectedCharacterName(latestCharacter?.name || sortedData[0].name);
+      } else {
+        setCharacterOptions([]);
+        setSelectedCharacterName('');
       }
+      setIsLoadingOptions(false);
     };
     getCharacterOptions();
   }, []);
@@ -50,23 +60,35 @@ const CharacterViewer = () => {
   const items = characterData?.items;
   const charLevel = character?.level;
 
-  console.log('characterData', rawCharacterData);
-
   return (
     <div>
       <div className="min-h-screen h-auto bg-[#0b0a0aa7] max-md:bg-[#28242476]">
-        {!selectedCharacterName && (
-          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-3 px-3">
+        {isLoadingOptions && (
+          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-50 px-5">
             Loading character data...
           </div>
         )}
+        {!isLoadingOptions && characterOptions.length === 0 && (
+          <div className="flex items-center bg-[#080808b9] max-md:bg-[#070707a0] py-50 px-5">
+            <div className="m-auto">
+              <button
+                onClick={() => router.push('/')}
+                className="mr-[8px] bg-black border hover:bg-gray-800  focus:outline-none rounded-lg text-sm px-[10px] py-[2px] mb-[8px]"
+              >
+                {'<'}
+              </button>{' '}
+              No characters found
+            </div>
+          </div>
+        )}
+
         {rawCharacterData?.hasError && (
           <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-3 px-3">
             {rawCharacterData.error}
           </div>
         )}
 
-        {selectedCharacterName && (
+        {characterOptions.length > 0 && (
           <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-3 px-3">
             <CharacterDropdown
               characterOptions={characterOptions}

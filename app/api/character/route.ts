@@ -73,10 +73,13 @@ export async function GET(request: Request) {
       hasError: false,
       expiresAt: now + CACHE_TTL_MS,
     });
-    return NextResponse.json({
-      characterData: data,
-      hasError: false,
-    });
+    return NextResponse.json(
+      {
+        characterData: data,
+        hasError: false,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       { hasError: true, error: 'Error fetching items data.' },
