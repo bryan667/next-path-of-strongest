@@ -40,9 +40,9 @@ const AccountView = () => {
   };
 
   return (
-    <div className="app-main">
-      <div className="bg-main-opaque">
-        <div className="flex flex-col items-center bg-main-vertical min-w-[5] min-h-[5] py-5 px-5">
+    <div>
+      <div className="min-h-screen h-auto bg-[#0b0a0aa7] max-md:bg-[#28242476]">
+        <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] min-w-[5] min-h-[5] py-5 px-5">
           <div className="flex justify-center items-center">
             <img
               src="/POE-main-logo-192x192.webp"
@@ -50,7 +50,7 @@ const AccountView = () => {
               className="w-25 h-25"
             />
           </div>
-          <div className="xs-media-flex items-center">
+          <div className="block sm:flex items-center">
             <div className="w-[100%] mr-[5px] pb-[6px]">
               <ReuseDropdown
                 id="realm"

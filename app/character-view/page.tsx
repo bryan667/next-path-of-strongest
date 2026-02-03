@@ -5,6 +5,7 @@ import { fetchCharacterData, fetchCharactersByRealm } from '../../lib/apiFetch';
 import EquipmentGrid from '../../components/EquipmentGrid';
 import CharacterDropdown from '../../components/CharacterDropdown';
 import { isEmpty, sortBy, toLower } from 'lodash';
+import { TEXT_CLASSES } from '@/styles/text';
 
 const CharacterViewer = () => {
   const [rawCharacterData, setRawCharacterData] = useState<CharacterData>();
@@ -52,21 +53,21 @@ const CharacterViewer = () => {
   console.log('characterData', rawCharacterData);
 
   return (
-    <div className="app-main">
-      <div className="bg-main-opaque">
+    <div>
+      <div className="min-h-screen h-auto bg-[#0b0a0aa7] max-md:bg-[#28242476]">
         {!selectedCharacterName && (
-          <div className="flex flex-col items-center bg-main-vertical py-5 px-5">
+          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-5 px-5">
             Loading character data...
           </div>
         )}
         {rawCharacterData?.hasError && (
-          <div className="flex flex-col items-center bg-main-vertical py-5 px-5">
+          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-5 px-5">
             {rawCharacterData.error}
           </div>
         )}
 
         {selectedCharacterName && (
-          <div className="flex flex-col items-center bg-main-vertical py-5 px-5">
+          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-5 px-5">
             <CharacterDropdown
               characterOptions={characterOptions}
               setSelectedCharacterName={setSelectedCharacterName}
@@ -76,18 +77,18 @@ const CharacterViewer = () => {
         )}
 
         {characterData && (
-          <div className="flex flex-col items-center bg-main-vertical py-5 px-5">
+          <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-5 px-5">
             <div>
               <h1
                 data-component="char-name"
-                className="mt-4 mb-1 text-2xl md:text-4xl title-item gold-text1"
+                className={`mt-4 mb-1 text-2xl md:text-4xl ${TEXT_CLASSES.titleFont} ${TEXT_CLASSES.gold1}`}
               >
                 {character?.name}
               </h1>
               {charLevel && (
                 <h2
                   data-component="char-level"
-                  className="gold-text2 mb-3"
+                  className={`${TEXT_CLASSES.gold2} mb-3`}
                 >{`Level ${character.level} ${character.class}`}</h2>
               )}
             </div>
@@ -102,10 +103,14 @@ const CharacterViewer = () => {
                       className="rounded-full mr-4"
                     />
                     <div key={item.id}>
-                      <div className="title-item gold-text1">
+                      <div
+                        className={`${TEXT_CLASSES.titleFont} ${TEXT_CLASSES.gold1}}`}
+                      >
                         {`${item.name} ${item.typeLine}`}
                       </div>
-                      <div className="gold-text2">{item.baseType}</div>
+                      <div className={`${TEXT_CLASSES.gold2}`}>
+                        {item.baseType}
+                      </div>
                     </div>
                   </div>
                 ))}

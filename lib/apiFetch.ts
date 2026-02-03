@@ -5,7 +5,7 @@ export const fetchCharacterData = async ({
   characterName,
 }: {
   accountName?: string | null;
-  characterName?: string;
+  characterName?: string | null;
 }) => {
   const params = new URLSearchParams({
     accountName: accountName || DEFAULT_ACCOUNT_NAME,
@@ -27,7 +27,7 @@ export const fetchCharacterData = async ({
 
 export const fetchCharactersByRealm = async ({
   accountName,
-  realm,
+  realm = 'pc',
 }: {
   accountName?: string | null;
   realm?: string | null;

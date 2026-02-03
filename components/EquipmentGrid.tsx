@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import EquipIcon from './EquipIcon';
 import {
-  defaultGridStyle,
-  equipmentFlaskStyles,
-  equipmentSetStyles,
+  DEFAULT_GRID_STYLES,
+  EQUIPMENT_FLASK_STYLES,
+  EQUIPMENT_SET_STYLES,
 } from '@/styles/gridstyles';
 
 type TProps = {
@@ -27,11 +27,11 @@ const EquipmentGrid: FC<TProps> = ({ items }) => {
 
   const renderEquips = () => {
     const equips = [];
-    for (const key in equipmentSetStyles) {
+    for (const key in EQUIPMENT_SET_STYLES) {
       equips.push(
         <div
           key={key}
-          className={`${equipmentSetStyles[key]} ${defaultGridStyle}`}
+          className={`${EQUIPMENT_SET_STYLES[key]} ${DEFAULT_GRID_STYLES}`}
         >
           <EquipIcon equip={equipmentSet[key]} />
         </div>
@@ -42,11 +42,11 @@ const EquipmentGrid: FC<TProps> = ({ items }) => {
 
   const renderFlasks = () => {
     const flasks = [];
-    for (const key in equipmentFlaskStyles) {
+    for (const key in EQUIPMENT_FLASK_STYLES) {
       flasks.push(
         <div
           key={key}
-          className={`${equipmentFlaskStyles[key]} ${defaultGridStyle}`}
+          className={`${EQUIPMENT_FLASK_STYLES[key]} ${DEFAULT_GRID_STYLES}`}
         >
           <EquipIcon equip={equipmentFlasks[key]} />
         </div>

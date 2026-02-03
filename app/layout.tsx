@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Path of Strongest',
-  description: 'View Path of Exile character equipment and details.',
+  description: 'view POE public character equipment and details.',
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className={`antialiased`}>{children}</body>
     </html>
   );
 }
