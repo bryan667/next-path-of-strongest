@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import { useRouter } from 'next/navigation';
 
 type TProps = {
-  characterOptions: any[];
+  characterOptions: CharacterOptions[];
   setSelectedCharacterName: React.Dispatch<React.SetStateAction<string>>;
   selectedCharacterName: string;
 };
@@ -44,7 +44,10 @@ const CharacterDropdown: FC<TProps> = ({
         className="block w-[100%] px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       >
         {characterOptions.map(
-          (char: { name: string; level: string; league: string }, index) => {
+          (
+            char: Pick<CharacterOptions, 'name' | 'level' | 'league'>,
+            index
+          ) => {
             return (
               <option
                 className="text-black"

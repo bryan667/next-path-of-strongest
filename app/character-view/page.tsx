@@ -9,26 +9,43 @@ import { TEXT_CLASSES } from '@/styles/text';
 import { useRouter } from 'next/navigation';
 
 const CharacterViewer = () => {
-  const [rawCharacterData, setRawCharacterData] = useState<CharacterData>();
   const [selectedCharacterName, setSelectedCharacterName] =
     useState<string>('');
-  const [characterOptions, setCharacterOptions] = useState<any[]>([]);
-  const [isLoadingOptions, setIsLoadingOptions] = useState<boolean>(true);
+  const [rawCharacterData, setRawCharacterData] =
+    useState<CharacterDataWithItems>();
+  const [characterOptions, setCharacterOptions] = useState<CharacterOptions[]>(
+    []
+  );
+  const [isLoadingOptions, setIsLoadingOptions] = useState<boolean>(false);
+  const [localStorageValues, setLocalStorageValues] = useState<
+    Record<string, string>
+  >({});
 
   const router = useRouter();
 
   useEffect(() => {
+    setLocalStorageValues({
+      accountName: localStorage.getItem('accountName') || '',
+      realm: localStorage.getItem('realm') || '',
+    });
+  }, []);
+
+  const accountName = localStorageValues.accountName;
+  const realm = localStorageValues.realm;
+
+  useEffect(() => {
     const getCharacterOptions = async () => {
+      if (!accountName || !realm) return;
+
       setIsLoadingOptions(true);
-      const accountName = localStorage.getItem('accountName');
-      const realm = localStorage.getItem('realm');
       const rawData = await fetchCharactersByRealm({ accountName, realm });
       const data = rawData?.data || [];
 
       if (!rawData?.error && !isEmpty(data)) {
-        const sortedData = sortBy(data, d => d.league) || [];
+        const sortedData: CharacterOptions[] =
+          sortBy(data, d => d.league) || [];
         setCharacterOptions(sortedData);
-        const latestCharacter = data.find((d: any) => {
+        const latestCharacter = sortedData.find((d: CharacterOptions) => {
           return toLower(d.league) === 'settlers';
         });
         setSelectedCharacterName(latestCharacter?.name || sortedData[0].name);
@@ -39,10 +56,9 @@ const CharacterViewer = () => {
       setIsLoadingOptions(false);
     };
     getCharacterOptions();
-  }, []);
+  }, [accountName, realm]);
 
   useEffect(() => {
-    const accountName = localStorage.getItem('accountName');
     if (selectedCharacterName) {
       const getData = async () => {
         const data = await fetchCharacterData({

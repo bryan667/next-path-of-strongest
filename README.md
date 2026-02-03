@@ -1,17 +1,13 @@
 ## Vercel
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+https://next-path-of-strongest.vercel.app/
 
 ## Getting Started
 
-First, run the development server:
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+cannot run this locally, it requires private .env keys
+
+## Path of Exile Docs
+
+https://www.pathofexile.com/developer/docs
