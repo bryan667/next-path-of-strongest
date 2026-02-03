@@ -3,7 +3,14 @@
 import { FC, useState } from 'react';
 import { toLower } from 'lodash';
 import EquipPopupDetails from './EquipPopupDetails';
-import { useFloating, autoPlacement, shift } from '@floating-ui/react';
+import {
+  useFloating,
+  autoPlacement,
+  shift,
+  size,
+  autoUpdate,
+  offset,
+} from '@floating-ui/react';
 import { Rarity, RARITY_CLASSES } from '@/styles/rarity';
 
 type TProps = {
@@ -14,10 +21,34 @@ const EquipIcon: FC<TProps> = ({ equip }: any) => {
   const [isHovered, setIsHovered] = useState(false);
   const inventoryId = equip?.inventoryId;
   const rarity: Rarity = equip?.rarity || 'normal';
+  const getOverlapOffset = (rects: { reference: { width: number } }) => {
+    const isMobile =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(max-width: 768px)').matches;
+    const factor = isMobile ? 0.7 : 0.2;
+
+    return -(rects.reference.width * factor);
+  };
 
   const { refs, floatingStyles } = useFloating({
-    placement: 'right',
-    middleware: [autoPlacement(), shift()],
+    placement: 'top',
+    strategy: 'fixed',
+    whileElementsMounted: autoUpdate,
+    middleware: [
+      offset(({ rects }) => getOverlapOffset(rects)),
+      autoPlacement({ padding: 8 }),
+      shift({ padding: 8 }),
+      size({
+        padding: 8,
+        apply({ elements }) {
+          Object.assign(elements.floating.style, {
+            minWidth: `200px`,
+            minHeight: `auto`,
+            maxWidth: `270px`,
+          });
+        },
+      }),
+    ],
   });
 
   let backgroundColor = RARITY_CLASSES[toLower(rarity)];
