@@ -11,7 +11,7 @@ type TProps = {
 
 const EquipPopupDetails: FC<TProps> = ({
   isHovered = false,
-  backgroundColor = 'bg-normal-color',
+  backgroundColor = 'normal',
   equip,
   refs,
   floatingStyles,
@@ -25,7 +25,7 @@ const EquipPopupDetails: FC<TProps> = ({
 
         renderComp = (
           <>
-            <span className="text-gray-500">{`${property.name}:`}</span>
+            <span className="text-gray-400">{`${property.name}:`}</span>
             {!isEmpty(mainValue) && (
               <span className="text-white">{` ${mainValue}`}</span>
             )}
@@ -45,14 +45,18 @@ const EquipPopupDetails: FC<TProps> = ({
           data-component="popup-details-tooltip"
           ref={refs.setFloating}
           style={floatingStyles}
-          className={`${backgroundColor} pointer-events-none w-fit opacity-95 min-h-[100%] max-w-[calc(100vw-16px)] max-h-[calc(100vh-16px)] overflow-auto z-100 px-[0px] py-[10px]`}
+          className={`pointer-events-none relative w-fit min-h-[100%] max-w-[calc(100vw-16px)] max-h-[calc(100vh-16px)] overflow-auto z-100 px-[0px] py-[10px]`}
         >
-          <div className="text-center">
+          <div
+            aria-hidden="true"
+            className={`absolute inset-0 ${backgroundColor} opacity-90`}
+          />
+          <div className="relative z-6 text-center opacity-100">
             <div className="pb-3">
-              <h3 className="font-bold">{equip.name}</h3>
-              <h3 className="font-bold">{equip.baseType}</h3>
+              <h3 className="font-bold text-shadow-lg/30">{equip.name}</h3>
+              <h3 className="font-bold text-shadow-lg/30">{equip.baseType}</h3>
             </div>
-            <div className="bg-black min-h-[150px] p-[10px] text-sm/6">
+            <div className="bg-black/60 min-h-[150px] p-[10px] text-sm/6">
               {equip?.properties?.map((property: any, index: number) => {
                 return <div key={index}>{renderByDisplayMode(property)}</div>;
               })}
@@ -62,7 +66,7 @@ const EquipPopupDetails: FC<TProps> = ({
 
                 return (
                   <span key={index}>
-                    <span className="text-gray-500">{`${requirements.name}`}</span>
+                    <span className="text-gray-400">{`${requirements.name}`}</span>
                     {!isEmpty(reqVals) && (
                       <span className="text-white">{` ${reqVals} `}</span>
                     )}
