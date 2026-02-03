@@ -102,7 +102,7 @@ const AccountView = () => {
           </div>
           <div className="mt-[8px] justify-self-center">
             <a
-              href="https://github.com/bryan667/path-of-strongest"
+              href="https://github.com/bryan667/next-path-of-strongest"
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -58,9 +58,7 @@ export async function GET(request: Request) {
       params.append('realm', realm);
     }
 
-    const response = await fetch(
-      `${apiUrl}/api/poeOne/getCharacters?${params}`
-    );
+    const response = await fetch(`${apiUrl}/api/v1/poe1/characters?${params}`);
 
     if (!response.ok) {
       return NextResponse.json(

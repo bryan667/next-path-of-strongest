@@ -58,7 +58,7 @@ export async function GET(request: Request) {
       accountName,
       character: characterName,
     });
-    const response = await fetch(`${apiUrl}/api/poeOne/getItems?${params}`);
+    const response = await fetch(`${apiUrl}/api/v1/poe1/items?${params}`);
 
     if (!response.ok) {
       return NextResponse.json(
