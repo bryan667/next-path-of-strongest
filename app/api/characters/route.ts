@@ -21,10 +21,9 @@ const getCacheKey = (accountName: string, realm: string) =>
 
 export const runtime = 'nodejs';
 
-const apiUrl = process.env.API_URL;
-const defaultAccountName = process.env.DEFAULT_ACCOUNT_NAME || '';
-
 export async function GET(request: Request) {
+  const apiUrl = process.env.API_URL;
+
   if (!apiUrl) {
     return NextResponse.json(
       { hasError: true, error: 'API_URL is not configured.' },
@@ -33,13 +32,12 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
-  const accountName =
-    searchParams.get('account-name') || defaultAccountName || '';
+  const accountName = searchParams.get('account-name') || '';
   const realm = searchParams.get('realm') || '';
 
   if (!accountName) {
     return NextResponse.json(
-      { hasError: true, error: 'accountName is required.' },
+      { hasError: true, error: 'account-name is required.' },
       { status: 400 }
     );
   }
