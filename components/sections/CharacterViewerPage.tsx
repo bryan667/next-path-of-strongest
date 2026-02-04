@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { fetchCharacterData, fetchCharactersByRealm } from '../../lib/apiFetch';
 import EquipmentGrid from '@/components/EquipmentGrid';
 import CharacterDropdown from '@/components/CharacterDropdown';
+import Spinner from '@/components/Spinner';
 import { isEmpty, sortBy, toLower } from 'lodash';
 import { TEXT_CLASSES } from '@/styles/text';
 import { useRouter } from 'next/navigation';
@@ -17,6 +18,8 @@ export default function CharacterViewerPage() {
     []
   );
   const [isLoadingOptions, setIsLoadingOptions] = useState<boolean>(false);
+  const [isLoadingCharacterItems, setIsLoadingCharacterItems] =
+    useState<boolean>(false);
   const [localStorageValues, setLocalStorageValues] = useState<
     Record<string, string>
   >({});
@@ -34,7 +37,7 @@ export default function CharacterViewerPage() {
   const realm = localStorageValues.realm;
 
   useEffect(() => {
-    const getCharacterOptions = async () => {
+    const fetchCharacterOptions = async () => {
       if (!accountName || !realm) return;
 
       setIsLoadingOptions(true);
@@ -55,19 +58,21 @@ export default function CharacterViewerPage() {
       }
       setIsLoadingOptions(false);
     };
-    getCharacterOptions();
+    fetchCharacterOptions();
   }, [accountName, realm]);
 
   useEffect(() => {
     if (selectedCharacterName) {
-      const getData = async () => {
+      const fetchCharacterItemDetails = async () => {
+        setIsLoadingCharacterItems(true);
         const data = await fetchCharacterData({
           accountName: accountName,
           characterName: selectedCharacterName,
         });
+        setIsLoadingCharacterItems(false);
         setRawCharacterData(data);
       };
-      getData();
+      fetchCharacterItemDetails();
     }
   }, [selectedCharacterName]);
 
@@ -80,7 +85,8 @@ export default function CharacterViewerPage() {
     <div className="min-h-screen h-auto bg-[#0b0a0aa7] max-md:bg-[#28242476]">
       {isLoadingOptions && (
         <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-50 px-5">
-          Loading character data...
+          <Spinner isAbsolute={false} />
+          <p>Loading character data...</p>
         </div>
       )}
       {!isLoadingOptions && characterOptions.length === 0 && (
@@ -116,6 +122,7 @@ export default function CharacterViewerPage() {
       {characterData && (
         <div className="flex flex-col items-center bg-[#080808b9] max-md:bg-[#070707a0] py-3 px-3">
           <div>
+            {isLoadingCharacterItems && <Spinner />}
             <h1
               data-component="char-name"
               className={`mt-4 mb-1 text-2xl md:text-4xl ${TEXT_CLASSES.titleFont} ${TEXT_CLASSES.gold1}`}
