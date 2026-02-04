@@ -8,11 +8,11 @@ export const fetchCharacterData = async ({
   characterName?: string | null;
 }) => {
   const params = new URLSearchParams({
-    accountName: accountName || DEFAULT_ACCOUNT_NAME,
+    'account-name': accountName || DEFAULT_ACCOUNT_NAME,
   });
 
   if (characterName) {
-    params.append('characterName', characterName);
+    params.append('character-name', characterName);
   }
 
   try {
@@ -33,7 +33,7 @@ export const fetchCharactersByRealm = async ({
   realm?: string | null;
 }) => {
   const params = new URLSearchParams({
-    accountName: accountName || DEFAULT_ACCOUNT_NAME,
+    'account-name': accountName || DEFAULT_ACCOUNT_NAME,
   });
 
   if (realm) {

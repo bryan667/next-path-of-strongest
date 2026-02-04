@@ -34,9 +34,9 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const accountName =
-    searchParams.get('accountName') || defaultAccountName || '';
+    searchParams.get('account-name') || defaultAccountName || '';
   const characterName =
-    searchParams.get('characterName') || searchParams.get('character') || '';
+    searchParams.get('character-name') || searchParams.get('character') || '';
 
   if (!accountName || !characterName) {
     return NextResponse.json(

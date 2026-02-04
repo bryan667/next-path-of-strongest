@@ -1,7 +1,7 @@
-import fetch from "node-fetch";
-import { GET } from "../app/api/character/route";
+import fetch from 'node-fetch';
+import { GET } from '../app/api/character/route';
 
-jest.mock("node-fetch", () => ({
+jest.mock('node-fetch', () => ({
   __esModule: true,
   default: jest.fn(),
 }));
@@ -14,19 +14,19 @@ const createFetchResponse = (data: any, ok = true, status = 200) => ({
   json: async () => data,
 });
 
-describe("GET /api/character", () => {
+describe('GET /api/character', () => {
   beforeEach(() => {
     fetchMock.mockReset();
     (global as any).__characterCache?.clear?.();
-    process.env.API_URL = "https://server-prox.vercel.app";
-    process.env.DEFAULT_ACCOUNT_NAME = "Default#1234";
+    process.env.API_URL = 'https://server-prox.vercel.app';
+    process.env.DEFAULT_ACCOUNT_NAME = 'Default#1234';
   });
 
-  it("returns 500 when API_URL is missing", async () => {
+  it('returns 500 when API_URL is missing', async () => {
     delete process.env.API_URL;
 
     const request = new Request(
-      "http://localhost/api/character?accountName=A&characterName=Char"
+      'http://localhost/api/character?account-name=A&character-name=Char'
     );
     const response = await GET(request);
     const payload = await response.json();
@@ -35,8 +35,10 @@ describe("GET /api/character", () => {
     expect(payload.hasError).toBe(true);
   });
 
-  it("returns 400 when required params are missing", async () => {
-    const request = new Request("http://localhost/api/character?accountName=A");
+  it('returns 400 when required params are missing', async () => {
+    const request = new Request(
+      'http://localhost/api/character?account-name=A'
+    );
     const response = await GET(request);
     const payload = await response.json();
 
@@ -44,34 +46,36 @@ describe("GET /api/character", () => {
     expect(payload.hasError).toBe(true);
   });
 
-  it("fetches character data and returns payload", async () => {
-    const mockData = { character: { name: "Hero" }, items: [] };
+  it('fetches character data and returns payload', async () => {
+    const mockData = { character: { name: 'Hero' }, items: [] };
     fetchMock.mockResolvedValueOnce(createFetchResponse(mockData));
 
     const request = new Request(
-      "http://localhost/api/character?accountName=A&characterName=Hero"
+      'http://localhost/api/character?account-name=A&character-name=Hero'
     );
     const response = await GET(request);
     const payload = await response.json();
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(payload).toEqual(mockData);
+    expect(payload).toEqual({ characterData: mockData, hasError: false });
   });
 
-  it("caches character data by account and character", async () => {
-    const mockData = { character: { name: "Hero" }, items: [] };
+  it('caches character data by account and character', async () => {
+    const mockData = { character: { name: 'Hero' }, items: [] };
     fetchMock.mockResolvedValue(createFetchResponse(mockData));
 
     const request = new Request(
-      "http://localhost/api/character?accountName=A&characterName=Hero"
+      'http://localhost/api/character?account-name=A&character-name=Hero'
     );
 
     const first = await GET(request);
     const second = await GET(request);
 
-    await first.json();
-    await second.json();
+    const firstPayload = await first.json();
+    const secondPayload = await second.json();
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(firstPayload.characterData).toEqual(mockData);
+    expect(secondPayload.characterData).toEqual(mockData);
   });
 });

@@ -34,7 +34,7 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const accountName =
-    searchParams.get('accountName') || defaultAccountName || '';
+    searchParams.get('account-name') || defaultAccountName || '';
   const realm = searchParams.get('realm') || '';
 
   if (!accountName) {

@@ -1,7 +1,7 @@
-import fetch from "node-fetch";
-import { GET } from "../app/api/characters/route";
+import fetch from 'node-fetch';
+import { GET } from '../app/api/characters/route';
 
-jest.mock("node-fetch", () => ({
+jest.mock('node-fetch', () => ({
   __esModule: true,
   default: jest.fn(),
 }));
@@ -14,19 +14,19 @@ const createFetchResponse = (data: any, ok = true, status = 200) => ({
   json: async () => data,
 });
 
-describe("GET /api/characters", () => {
+describe('GET /api/characters', () => {
   beforeEach(() => {
     fetchMock.mockReset();
     (global as any).__charactersCache?.clear?.();
-    process.env.API_URL = "https://server-prox.vercel.app";
-    process.env.DEFAULT_ACCOUNT_NAME = "Default#1234";
+    process.env.API_URL = 'https://server-prox.vercel.app';
+    process.env.DEFAULT_ACCOUNT_NAME = 'Default#1234';
   });
 
-  it("returns 500 when API_URL is missing", async () => {
+  it('returns 500 when API_URL is missing', async () => {
     delete process.env.API_URL;
 
     const request = new Request(
-      "http://localhost/api/characters?accountName=A&realm=pc"
+      'http://localhost/api/characters?account-name=A&realm=pc'
     );
     const response = await GET(request);
     const payload = await response.json();
@@ -35,9 +35,9 @@ describe("GET /api/characters", () => {
     expect(payload.hasError).toBe(true);
   });
 
-  it("returns 400 when accountName is missing", async () => {
+  it('returns 400 when account-name is missing', async () => {
     delete process.env.DEFAULT_ACCOUNT_NAME;
-    const request = new Request("http://localhost/api/characters?realm=pc");
+    const request = new Request('http://localhost/api/characters?realm=pc');
     const response = await GET(request);
     const payload = await response.json();
 
@@ -45,34 +45,36 @@ describe("GET /api/characters", () => {
     expect(payload.hasError).toBe(true);
   });
 
-  it("fetches character list and returns payload", async () => {
-    const mockData = [{ name: "Hero", level: 99 }];
+  it('fetches character list and returns payload', async () => {
+    const mockData = [{ name: 'Hero', level: 99 }];
     fetchMock.mockResolvedValueOnce(createFetchResponse(mockData));
 
     const request = new Request(
-      "http://localhost/api/characters?accountName=A&realm=pc"
+      'http://localhost/api/characters?account-name=A&realm=pc'
     );
     const response = await GET(request);
     const payload = await response.json();
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(payload).toEqual(mockData);
+    expect(payload).toEqual({ data: mockData });
   });
 
-  it("caches character list by account and realm", async () => {
-    const mockData = [{ name: "Hero", level: 99 }];
+  it('caches character list by account and realm', async () => {
+    const mockData = [{ name: 'Hero', level: 99 }];
     fetchMock.mockResolvedValue(createFetchResponse(mockData));
 
     const request = new Request(
-      "http://localhost/api/characters?accountName=A&realm=pc"
+      'http://localhost/api/characters?account-name=A&realm=pc'
     );
 
     const first = await GET(request);
     const second = await GET(request);
 
-    await first.json();
-    await second.json();
+    const firstPayload = await first.json();
+    const secondPayload = await second.json();
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(firstPayload).toEqual({ data: mockData });
+    expect(secondPayload).toEqual({ data: mockData });
   });
 });
